@@ -3,12 +3,14 @@
 # /dev/sda2 / ext4 defaults 0 1
 # /dev/sdb1 /var/lib/postgresql ext4 defaults 0 2
 # 192.168.4.5:/home /var/nfs/home nfs defaults,noexec,nosuid 0 0
+# tune2fs -m 10 /dev/sdb1
 
 import yaml
+import os
 
 with open("input.yaml", "r") as stream:
     try:
-        yml = yaml.safe_load(stream)
+        yml = yaml.safe_load(stream) # python dictionary
     except yaml.YAMLError as exc:
         print(exc)
 
@@ -22,8 +24,12 @@ for key in yml['fstab']:
         for k,v in yml['fstab'][key].items(): # {'mount': '/boot', 'type': 'xfs'}
             if k == 'mount':
                 mount = v
-            r += v
-            r += " "
+            if k == 'root-reserve':
+                tunefs = "tune2fs -m 10 {}".format(key)
+                os.system(tunefs)
+            else:
+                r += v
+                r += " "
 
         if mount == '/boot':
             # defaults 1 2
