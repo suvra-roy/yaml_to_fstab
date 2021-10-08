@@ -15,6 +15,7 @@ pip install pyyaml
 ### Run `main.py` file
 ```cython
 python main.py
+this will create a output file output.txt
 ```
 
 ### Gotchas:
